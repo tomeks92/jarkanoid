@@ -30,6 +30,7 @@ public class Ekran extends JPanel implements Runnable {
 
     Ekran(Plytka plytka, ArrayList<Kulka> kulki, ArrayList<Blok> bloki) throws IOException, InterruptedException {
 
+        this.setDoubleBuffered(true);
         start = false;
         plytkiImg = new ArrayList<>();
         plytkiImg.add(ImageIO.read(new File("stdp.bmp")));

@@ -94,11 +94,36 @@ public class Okno extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         try {
-             plytka = new Plytka();
+            plytka = new Plytka();
             kulki = new ArrayList<>();
             kulki.add(new Kulka());
             bloki = new ArrayList<>();
-            bloki.add(new Blok(200, 250, 0));
+            
+            for (int i = 0; i < 15; i++) {
+                
+            
+            bloki.add(new Blok(50, i*20+50, 0));
+            bloki.add(new Blok(85, i*20+50, 0));
+            bloki.add(new Blok(120, i*20+50, 0));
+            bloki.add(new Blok(155, i*20+50, 0));
+            bloki.add(new Blok(190, i*20+50, 0));
+            bloki.add(new Blok(225, i*20+50, 0));
+            bloki.add(new Blok(260, i*20+50, 0));
+            bloki.add(new Blok(295, i*20+50, 0));
+            bloki.add(new Blok(330, i*20+50, 0));
+            bloki.add(new Blok(365, i*20+50, 0));
+            bloki.add(new Blok(400, i*20+50, 0));
+            bloki.add(new Blok(435, i*20+50, 0));
+            bloki.add(new Blok(470, i*20+50, 0));
+            bloki.add(new Blok(505, i*20+50, 0));
+            bloki.add(new Blok(540, i*20+50, 0));
+            bloki.add(new Blok(575, i*20+50, 0));
+            bloki.add(new Blok(610, i*20+50, 0));
+            bloki.add(new Blok(645, i*20+50, 0));
+            bloki.add(new Blok(680, i*20+50, 0));
+            bloki.add(new Blok(715, i*20+50, 0));
+            }
+            
             gameLayeredPane.setEnabled(false);
             gameLayeredPane.setVisible(false);
             ekran = new Ekran(plytka,kulki,bloki);
