@@ -18,31 +18,34 @@ import javax.swing.JPanel;
  *
  * @author Tomasz Siuchniński
  */
-public class Ekran extends JPanel implements Runnable{
+public class Ekran extends JPanel implements Runnable {
+
     private Plytka plytka;
     private ArrayList<Kulka> kulki;
     private ArrayList<Blok> bloki;
     private ArrayList<BufferedImage> plytkiImg;
     private ArrayList<BufferedImage> kulkiImg;
     private ArrayList<BufferedImage> blokiImg;
-    
-    Ekran(Plytka plytka,ArrayList<Kulka> kulki, ArrayList<Blok> bloki) throws IOException, InterruptedException{
-        
+    private boolean start;
+
+    Ekran(Plytka plytka, ArrayList<Kulka> kulki, ArrayList<Blok> bloki) throws IOException, InterruptedException {
+
+        start = false;
         plytkiImg = new ArrayList<>();
         plytkiImg.add(ImageIO.read(new File("stdp.bmp")));
         kulkiImg = new ArrayList<>();
         kulkiImg.add(ImageIO.read(new File("stdb.bmp")));
         blokiImg = new ArrayList<>();
         blokiImg.add(ImageIO.read(new File("block1.bmp")));
-        
-        this.kulki=kulki;
+
+        this.kulki = kulki;
         this.bloki = bloki;
-        
+
         this.setSize(800, 600);
         this.plytka = plytka;
-        
-        
-        
+
+
+
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             @Override
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -50,92 +53,116 @@ public class Ekran extends JPanel implements Runnable{
             }
         });
         
-    } 
-    
-    @Override
-    public void paintComponent(Graphics g) {
-        g.clearRect(0, 0, 800, 600);
-       
-        
-        for(Kulka k: kulki){
-            g.drawImage(kulkiImg.get(k.getTyp()), (int)(k.getX()-k.getSize()/2), (int)(k.getY()-k.getSize()/2), null);
-        }
-        for(Blok b: bloki){
-            if (!b.isZniszczony()){
-                g.drawImage(blokiImg.get(0), (int)(b.getX()), (int)(b.getY()), null);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
             }
-            
-        }
-        
-         g.drawImage(plytkiImg.get(0), plytka.getX()-50, 540, null);
-    }
-    
-    private void formMouseMoved(java.awt.event.MouseEvent evt) {                                
-        if(evt.getX()>plytka.getWidth()/2 && evt.getX()<this.getWidth()-plytka.getWidth()/2) {
-            plytka.setX(evt.getX());
-        } else {
-            if (evt.getX()<plytka.getWidth()/2+1){
-                plytka.setX(plytka.getWidth()/2);
-            }else{
-                plytka.setX(this.getWidth()-plytka.getWidth()/2);
-            } 
-            
-        }
-        
-       
+        });
+
     }
 
     @Override
+    public void paintComponent(Graphics g) {
+        g.clearRect(0, 0, 800, 600);
+
+
+        for (Kulka k : kulki) {
+            g.drawImage(kulkiImg.get(k.getTyp()), (int) (k.getX() - k.getSize() / 2), (int) (k.getY() - k.getSize() / 2), null);
+        }
+        for (Blok b : bloki) {
+            if (!b.isZniszczony()) {
+                g.drawImage(blokiImg.get(0), (int) (b.getX()), (int) (b.getY()), null);
+            }
+
+        }
+
+        g.drawImage(plytkiImg.get(0), plytka.getX() - 50, 535, null);
+    }
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {
+        if (evt.getX() > plytka.getWidth() / 2 && evt.getX() < this.getWidth() - plytka.getWidth() / 2) {
+            plytka.setX(evt.getX());
+        } else {
+            if (evt.getX() < plytka.getWidth() / 2 + 1) {
+                plytka.setX(plytka.getWidth() / 2);
+            } else {
+                plytka.setX(this.getWidth() - plytka.getWidth() / 2);
+            }
+
+        }
+
+
+    }
+    
+     private void formMouseClicked(java.awt.event.MouseEvent evt) {
+        start=true;
+        kulki.get(0).setVx(1);
+        kulki.get(0).setVy(1.5);
+    }
+    @Override
     public void run() {
-        while(true){         
+        while (true) {
             try {
                 Thread.sleep(5);
-                
-                for (Kulka k: kulki){
-                    if(k.getY()+k.getSize() < 540+k.getSize()/2 && k.getY()+k.getSize()+k.getVy() > 540+k.getSize()/2 && plytka.getX()-plytka.getWidth()/2<k.getX()+k.getSize() && plytka.getX()+plytka.getWidth()/2>k.getX()){
-                        k.odbij('|');
-                        double kier = ((k.getX()+k.getSize())-(plytka.getX()))/plytka.getWidth();
-                        //if (kier<0) 
-                        kier=-kier; 
-                        k.setVx(2*kier*k.getVy());
-                    }  //DOPRACOWAĆ!!!
-                    
-                    
-                    if(k.getY()-k.getSize()+k.getVy() < 0-k.getSize()/2) k.odbij('|');
-                    
-                    if(k.getX()-k.getSize()+k.getVx() < 0-k.getSize()/2) k.odbij('-');
-                    if(k.getX()+k.getSize()+k.getVx() > 800) k.odbij('-');
-                    
-                    for(Blok b: bloki){
-                        if(!b.isZniszczony()){
-                        if (b.hitTest(k.getX()+k.getSize()/2+k.getVx(), k.getY()+k.getVy())){
-                            //if(k.getY()+k.getSize()/2>b.getY()+b.getHeight()){
-                                k.odbij('|');
-                            //}
-                            b.uderz();
-                        }else if (b.hitTest(k.getX()+k.getSize()/2+k.getVx(), k.getY()+k.getSize()+k.getVy())){
-                            //if(k.getY()+k.getSize()/2<b.getY()){
-                                k.odbij('|');
-                            //}
-                            b.uderz();
-                        }else if (b.hitTest(k.getX()+k.getVx(), k.getY()+k.getSize()/2+k.getVy())){
-                           // if(k.getX()+k.getSize()/2>b.getX()+b.getWidth()){
-                                k.odbij('-');
-                            //}
-                            b.uderz();
-                        }else if (b.hitTest(k.getX()+k.getVx(), k.getY()+k.getSize()/2+k.getVy())){
-                            //if(k.getX()+k.getSize()/2<b.getX()){
-                                k.odbij('-');
-                            //}
-                            b.uderz();
+
+                if (!start) {
+                    kulki.get(0).setX(plytka.getX()+20);
+                    kulki.get(0).setY(540-kulki.get(0).getSize());
+                } else {
+
+
+                    for (Kulka k : kulki) {
+                        if (k.getY() + k.getSize() < 540 + k.getSize() / 2 && k.getY() + k.getSize() + k.getVy() > 540 + k.getSize() / 2 && plytka.getX() - plytka.getWidth() / 2 < k.getX() + k.getSize() && plytka.getX() + plytka.getWidth() / 2 > k.getX()) {
+                            k.odbij('|');
+                            double kier = ((k.getX() + k.getSize()) - (plytka.getX())) / plytka.getWidth();
+                            //if (kier<0) 
+                            kier = -kier;
+                            k.setVx(2 * kier * k.getVy());
+                        }  //DOPRACOWAĆ!!!
+
+
+                        if (k.getY() - k.getSize() + k.getVy() < 0 - k.getSize() / 2) {
+                            k.odbij('|');
                         }
+
+                        if (k.getX() - k.getSize() + k.getVx() < 0 - k.getSize() / 2) {
+                            k.odbij('-');
                         }
+                        if (k.getX() + k.getSize() + k.getVx() > 800) {
+                            k.odbij('-');
+                        }
+
+                        for (Blok b : bloki) {
+                            if (!b.isZniszczony()) {
+                                if (b.hitTest(k.getX() + k.getSize() / 2 + k.getVx(), k.getY() + k.getVy())) {
+                                    //if(k.getY()+k.getSize()/2>b.getY()+b.getHeight()){
+                                    k.odbij('|');
+                                    //}
+                                    b.uderz();
+                                } else if (b.hitTest(k.getX() + k.getSize() / 2 + k.getVx(), k.getY() + k.getSize() + k.getVy())) {
+                                    //if(k.getY()+k.getSize()/2<b.getY()){
+                                    k.odbij('|');
+                                    //}
+                                    b.uderz();
+                                } else if (b.hitTest(k.getX() + k.getVx(), k.getY() + k.getSize() / 2 + k.getVy())) {
+                                    // if(k.getX()+k.getSize()/2>b.getX()+b.getWidth()){
+                                    k.odbij('-');
+                                    //}
+                                    b.uderz();
+                                } else if (b.hitTest(k.getX() + k.getVx(), k.getY() + k.getSize() / 2 + k.getVy())) {
+                                    //if(k.getX()+k.getSize()/2<b.getX()){
+                                    k.odbij('-');
+                                    //}
+                                    b.uderz();
+                                }
+                            }
+                        }
+
+                        k.setY(k.getY() + k.getVy());
+                        k.setX(k.getX() + k.getVx());
                     }
-                    
-                    k.setY(k.getY()+k.getVy());
-                    k.setX(k.getX()+k.getVx());
                 }
-                
                 this.repaint();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Ekran.class.getName()).log(Level.SEVERE, null, ex);

@@ -22,8 +22,8 @@ public class Kulka {
         this.y = 100;
         typ = 0;
         size = 10;
-        this.vx = -1;
-        this.vy = 2;
+        this.vx = 0;
+        this.vy = 0;
     }
     
     

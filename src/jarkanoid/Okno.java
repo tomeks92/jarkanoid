@@ -94,6 +94,11 @@ public class Okno extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         try {
+             plytka = new Plytka();
+            kulki = new ArrayList<>();
+            kulki.add(new Kulka());
+            bloki = new ArrayList<>();
+            bloki.add(new Blok(200, 250, 0));
             gameLayeredPane.setEnabled(false);
             gameLayeredPane.setVisible(false);
             ekran = new Ekran(plytka,kulki,bloki);

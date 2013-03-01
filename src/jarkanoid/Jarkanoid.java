@@ -25,13 +25,10 @@ public class Jarkanoid {
         
         plytka = new Plytka();
         kulki = new ArrayList<>();
-        kulki.add(new Kulka());
         bloki = new ArrayList<>();
-        bloki.add(new Blok(200, 250, 0));
-        ekran = new Ekran(plytka,kulki,bloki);
-        new Thread(ekran).start();
-                 
+        //ekran = new Ekran(plytka,kulki,bloki);
+        //new Thread(ekran).start();              
         okno = new Okno(plytka,kulki,bloki);
-        okno.add(ekran);  
+        //okno.add(ekran);  
     }
 }
