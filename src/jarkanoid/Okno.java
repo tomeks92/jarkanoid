@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLayeredPane;
 
 /**
  *
@@ -88,6 +89,10 @@ public class Okno extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formMouseMoved
 
+    public JLayeredPane getMenu(){
+        return gameLayeredPane;
+    } 
+    
     private void imieFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imieFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_imieFieldActionPerformed
@@ -126,9 +131,13 @@ public class Okno extends javax.swing.JFrame {
             
             gameLayeredPane.setEnabled(false);
             gameLayeredPane.setVisible(false);
-            ekran = new Ekran(plytka,kulki,bloki);
+            ekran = new Ekran(bloki.size(),plytka,kulki,bloki,this);
+            
             new Thread(ekran).start();
             this.add(ekran);
+           
+                //if (ekran.getZniszczone()<ekran.getCel()) this.remove(ekran);
+            
             
             
         } catch (IOException ex) {
